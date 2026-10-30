@@ -5,7 +5,8 @@ import 'screens/login/login_screen.dart';
 
 /// ============================================================================
 /// BÀI TẬP / ĐỒ ÁN: CHỦ ĐỀ 2 - TỔ CHỨC BỐ CỤC LINH HOẠT VÀ XỬ LÝ KHÔNG GIAN
-/// Kiến trúc thư mục tuân thủ chuẩn:
+/// 
+/// Kiến trúc thư mục tuân thủ tuyệt đối cấu trúc yêu cầu:
 /// lib/
 /// ├── main.dart
 /// ├── core/
@@ -25,8 +26,7 @@ import 'screens/login/login_screen.dart';
 ///             ├── login_button.dart
 ///             ├── login_options_row.dart
 ///             ├── face_id_button.dart
-///             ├── login_footer.dart
-///             └── topic2_demo_panel.dart
+///             └── login_footer.dart
 /// ============================================================================
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

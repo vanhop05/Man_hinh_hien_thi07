@@ -6,8 +6,8 @@ class AppStrings {
   static const String appSlogan = 'Ngân hàng số an toàn - tiện lợi - chuẩn mực';
 
   // Thông tin thẻ tài khoản (Account Card)
-  static const String defaultAccountName = 'NGUYỄN VĂN AN';
-  static const String longAccountNameDemo = 'NGUYỄN HOÀNG MINH KHANG TRỌNG ĐẠT (NỘI DUNG DÀI TEST OVERFLOW)';
+  static const String defaultAccountName = 'TRẦN VĂN HỢP';
+  static const String longAccountName = 'TRẦN VĂN HỢP MAI TUẤN AN';
   static const String defaultAccountNumber = '1029 8838 9999';
   static const String switchAccount = 'Đổi tài khoản';
   static const String onlineStatus = 'Đang hoạt động';
@@ -29,14 +29,5 @@ class AppStrings {
   static const String hotline = 'Hotline: 1900 6868';
   static const String findAtm = 'Điểm ATM / PGD';
   static const String supportFaq = 'Hỗ trợ 24/7';
-  static const String appVersion = 'Chủ đề 2: Tổ chức bố cục linh hoạt và xử lý không gian';
-
-  // Demo & Thuyết trình lý thuyết Chủ đề 2
-  static const String topicTitle = 'Chủ đề 2: Tổ chức bố cục linh hoạt và xử lý không gian';
-  static const String loginTabTitle = 'Màn hình Đăng nhập';
-  static const String demoTabTitle = 'Phòng Demo Chủ đề 2';
-  static const String demoMode = 'Chế độ Demo';
-  static const String toggleOverflowFix = 'Bật/Tắt xử lý Overflow';
-  static const String toggleLongName = 'Đổi nội dung ngắn / dài';
-  static const String theoryCheatSheet = 'Tóm tắt lý thuyết';
+  static const String appVersion = 'DNT Digital Banking • Phiên bản 2.4.0';
 }

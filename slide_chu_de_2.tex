@@ -15,7 +15,7 @@
 \fi
 
 \usepackage{tikz}
-\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, backgrounds, fit}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, backgrounds, fit, patterns}
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage{booktabs}
@@ -27,8 +27,8 @@
 % ==============================================================================
 % BẢNG MÀU CHUẨN THIẾT KẾ ĐỒNG BỘ THEO MẪU BÁO CÁO (NAVY & ORANGE ACCENT)
 % ==============================================================================
-\definecolor{NavyHeader}{RGB}{22, 36, 54}      % #162436: Xanh Navy đậm thanh tiêu đề
-\definecolor{AccentOrange}{RGB}{230, 81, 0}    % #E65100: Cam điểm nhấn thương hiệu
+\definecolor{NavyHeader}{RGB}{26, 43, 70}      % #1A2B46: Xanh Navy chuẩn thanh tiêu đề
+\definecolor{AccentOrange}{RGB}{229, 126, 33}  % #E57E21: Cam vát góc chuẩn thương hiệu
 \definecolor{NavyTitle}{RGB}{17, 34, 51}       % #112233: Tiêu đề slide chính
 \definecolor{TextDark}{RGB}{44, 62, 80}        % #2C3E50: Nội dung văn bản
 \definecolor{CodeBg}{RGB}{248, 249, 250}       % #F8F9FA: Nền hộp code nhẹ
@@ -40,26 +40,37 @@
 \definecolor{TableAltBg}{RGB}{248, 250, 252}   % Dòng so le bảng
 
 % ==============================================================================
-% ĐỊNH DẠNG BEAMER: THANH TIÊU ĐỀ TRÊN CÙNG & SỐ TRANG
+% ĐỊNH DẠNG BEAMER: THANH TIÊU ĐỀ TRÊN CÙNG CHUẨN HÌNH 1 (VIỀN VÁT GÓC ĐỘC LẬP)
 % ==============================================================================
 \setbeamertemplate{navigation symbols}{}
 \setbeamersize{text margin left=0.85cm, text margin right=0.85cm}
 \setbeamercolor{background canvas}{bg=white}
 \setbeamercolor{normal text}{fg=TextDark}
 
-% Header chuẩn hoá y hệt mẫu: Thanh Navy + Vát góc Cam + Tiêu đề + Trang X / 20
+% Header chuẩn xác 100% theo Ảnh 1:
+% Nền trắng bên trái -> Dải vạch cam chéo -> Khoảng hở trắng chéo -> Thanh Navy vát chéo
 \setbeamertemplate{headline}{%
   \begin{tikzpicture}[remember picture, overlay]
-    % Thanh nền xanh Navy
-    \fill[NavyHeader] (current page.north west) rectangle ([yshift=-0.92cm]current page.north east);
-    % Đa giác góc vát màu Cam bên trái
-    \fill[AccentOrange] (current page.north west) -- ++(1.45cm, 0) -- ++(-0.65cm, -0.92cm) -- ([yshift=-0.92cm]current page.north west) -- cycle;
-    % Tiêu đề chuyên đề trên thanh header
-    \node[anchor=west, text=white, font=\small\bfseries] at ([xshift=1.55cm, yshift=-0.46cm]current page.north west) {Kiến trúc ứng dụng Flutter -- Bố cục \& Không gian};
-    % Số trang hiện tại / Tổng số trang
-    \node[anchor=east, text=white, font=\small\bfseries] at ([xshift=-1.0cm, yshift=-0.46cm]current page.north east) {\insertframenumber{} / \inserttotalframenumber};
+    % 1. Dải vát màu Cam (Parallelogram độc lập trên nền trắng)
+    \fill[AccentOrange] 
+      ([xshift=2.85cm]current page.north west) -- 
+      ([xshift=3.13cm]current page.north west) -- 
+      ([xshift=4.08cm, yshift=-0.85cm]current page.north west) -- 
+      ([xshift=3.80cm, yshift=-0.85cm]current page.north west) -- cycle;
+      
+    % 2. Thanh Navy chính vát chéo song song (cách dải cam 1 khoảng hở trắng chuẩn)
+    \fill[NavyHeader] 
+      ([xshift=3.35cm]current page.north west) -- 
+      (current page.north east) -- 
+      ([yshift=-0.85cm]current page.north east) -- 
+      ([xshift=4.30cm, yshift=-0.85cm]current page.north west) -- cycle;
+      
+    % 3. Chữ tiêu đề trên nền thanh Navy
+    \node[anchor=center, text=white, font=\small\bfseries] at ([xshift=0.3cm, yshift=-0.425cm]current page.north) {Kiến trúc ứng dụng Flutter -- Bố cục \& Không gian};
+    % 4. Số trang ở góc phải
+    \node[anchor=east, text=white, font=\small\bfseries] at ([xshift=-1.0cm, yshift=-0.425cm]current page.north east) {\insertframenumber{} / \inserttotalframenumber};
   \end{tikzpicture}%
-  \vspace{0.88cm}%
+  \vspace{0.85cm}%
 }
 
 \setbeamertemplate{footline}{}
@@ -76,11 +87,11 @@
     throw, true, try, typedef, var, void, while, with, yield,
     Widget, BuildContext, State, StatefulWidget, StatelessWidget, Key,
     Row, Column, Stack, Positioned, Expanded, Flexible, SingleChildScrollView,
-    LayoutBuilder, ConstrainedBox, IntrinsicHeight, Spacer, Text, Container,
+    ListView, Wrap, FittedBox, LayoutBuilder, ConstrainedBox, IntrinsicHeight, Spacer, Text, Container,
     BoxConstraints, MainAxisAlignment, CrossAxisAlignment, FlexFit, TextOverflow,
     Color, Colors, EdgeInsets, TextStyle, FontWeight, BorderRadius, BoxDecoration,
     Scaffold, AppBar, Center, SizedBox, Icon, Icons, CircleAvatar, SnackBar,
-    Axis, Alignment, Border, BoxShadow, Offset
+    Axis, Alignment, Border, BoxShadow, Offset, MediaQuery
   },
   sensitive=true,
   morecomment=[l]{//},
@@ -117,44 +128,38 @@
 \begin{document}
 
 % ==============================================================================
-% TRANG 1: TRANG BÌA BÁO CÁO CHUYÊN ĐỀ
+% TRANG 1: TRANG BÌA BÁO CÁO CHUYÊN ĐỀ (ĐÃ BỎ CÁC CHI TIẾT THỪA THEO YÊU CẦU ẢNH 2)
 % ==============================================================================
 \begin{frame}
-  \vspace{0.65cm}
+  \vspace{0.75cm}
   \centering
-  {\textcolor{AccentOrange}{\textbf{\footnotesize BÁO CÁO CHUYÊN ĐỀ KỸ THUẬT}}}\\[0.28cm]
-  {\Huge \textbf{\textcolor{NavyTitle}{BỐ CỤC FLUTTER: FLEX \& SPACE}}}\\[0.18cm]
-  {\LARGE \textbf{\textcolor{NavyTitle}{Tổ Chức Bố Cục Linh Hoạt \& Xử Lý Không Gian}}}\\[0.35cm]
-  {\color{AccentOrange}\rule{5.2cm}{1.3pt}}\\[0.45cm]
+  {\textcolor{AccentOrange}{\textbf{\footnotesize BÁO CÁO CHUYÊN ĐỀ KỸ THUẬT}}}\\[0.32cm]
+  {\Huge \textbf{\textcolor{NavyTitle}{BỐ CỤC FLUTTER: FLEX \& SPACE}}}\\[0.20cm]
+  {\LARGE \textbf{\textcolor{NavyTitle}{Tổ Chức Bố Cục Linh Hoạt \& Xử Lý Không Gian}}}\\[0.40cm]
+  {\color{AccentOrange}\rule{5.2cm}{1.3pt}}\\[0.50cm]
 
-  {\large \textbf{Chủ đề 02:} Main Axis, Cross Axis -- Expanded, Flexible, Stack \& Positioned}\\[0.15cm]
-  {\normalsize Nguyên tắc Box Constraints -- Xử lý triệt để nguy cơ Overflow trong đa dạng bố cục}\\[0.4cm]
+  {\large \textbf{Chủ đề 02:} Main Axis, Cross Axis -- Expanded, Flexible, Stack \& Positioned}\\[0.18cm]
+  {\normalsize Toàn diện 5 phương pháp xử lý Overflow \& Giải pháp khắc phục triệt để trong dự án}\\[0.45cm]
 
-  {\small \textbf{Đầy đủ kiến trúc 7 widget thành phần \& Phòng thí nghiệm tương tác trực quan}}\\[0.5cm]
-
-  \begin{tikzpicture}
-    \node[draw=AccentOrange!60, fill=CardBg, rounded corners=6pt, inner sep=6pt] {
-      \footnotesize \textcolor{NavyTitle}{\textbf{Thời lượng báo cáo:}} 15 Phút \quad$\bullet$\quad \textcolor{NavyTitle}{\textbf{Học phần:}} Lập trình Đa nền tảng \quad$\bullet$\quad \textcolor{NavyTitle}{\textbf{Ứng dụng:}} DNT Digital Banking
-    };
-  \end{tikzpicture}
+  {\small Đầy đủ cấu trúc ứng dụng 7 thành phần \& Demo phản ứng khi kích thước / nội dung thay đổi}
 \end{frame}
 
 % ==============================================================================
 % TRANG 2: TỔNG QUAN NỘI DUNG BÁO CÁO (AGENDA)
 % ==============================================================================
 \begin{frame}
-  \SlideHeader{TỔNG QUAN CHUYÊN ĐỀ}{Nội Dung Báo Cáo}
+  \SlideHeader{TỔNG QUAN CHUYÊN ĐỀ}{Nội Dung Báo Cáo (15 Phút)}
 
   \begin{columns}[T]
     % Cột I
     \begin{column}{0.48\textwidth}
-      {\textcolor{AccentOrange}{\textbf{PHẦN I: LÝ THUYẾT NỀN TẢNG}}}\\[0.18cm]
+      {\textcolor{AccentOrange}{\textbf{PHẦN I: LÝ THUYẾT \& 5 CÁCH XỬ LÝ OVERFLOW}}}\\[0.18cm]
 
       \textbf{1. Đặt vấn đề \& Thách thức không gian}\\
-      {\footnotesize Vấn nạn "vỡ màn hình", vạch sọc vàng-đen và code cứng kích thước.}\\[0.14cm]
+      {\footnotesize Vấn nạn vỡ màn hình, code cứng kích thước \& vạch sọc vàng-đen.}\\[0.14cm]
 
       \textbf{2. Cốt lõi: Nguyên lý Box Constraints}\\
-      {\footnotesize Ba nguyên tắc vàng: Constraints down, Sizes up, Parent sets position.}\\[0.14cm]
+      {\footnotesize Khẩu quyết: Constraints down, Sizes up, Parent sets position.}\\[0.14cm]
 
       \textbf{3. Trục toạ độ: Main Axis \& Cross Axis}\\
       {\footnotesize Phân định hướng trục và các chế độ căn chỉnh trên Row \& Column.}\\[0.14cm]
@@ -163,27 +168,39 @@
       {\footnotesize So sánh Tight Fit (ép lấp đầy) vs Loose Fit (co giãn tự nhiên).}\\[0.14cm]
 
       \textbf{5. Bố cục xếp chồng: Stack \& Positioned}\\
-      {\footnotesize Quản lý không gian theo trục Z và định vị toạ độ tuyệt đối.}
+      {\footnotesize Quản lý trục Z và định vị toạ độ neo chính xác.}\\[0.14cm]
+
+      \textbf{6. Nguyên nhân gây lỗi Overflow (RenderFlex)}\\
+      {\footnotesize Cơ chế vượt kích thước tối đa và 3 tình huống kích hoạt lỗi.}\\[0.14cm]
+
+      \textbf{7. Chi tiết 5 cách xử lý Overflow chuẩn giáo trình}\\
+      {\footnotesize Cuộn trang, Phân chia linh hoạt, Wrap, Ellipsis, FittedBox.}
     \end{column}
 
     % Cột II
     \begin{column}{0.48\textwidth}
-      {\textcolor{AccentOrange}{\textbf{PHẦN II: THỰC THI DEMO \& ĐÁNH GIÁ}}}\\[0.18cm]
+      {\textcolor{AccentOrange}{\textbf{PHẦN II: THỰC THI DEMO \& CODE DỰ ÁN}}}\\[0.18cm]
 
-      \textbf{6. Nguyên nhân \& Cơ chế lỗi Overflow}\\
-      {\footnotesize Phân tích sự cố RenderFlex overflowed khi nội dung/kích thước đổi.}\\[0.14cm]
+      \textbf{8. Cấu trúc ứng dụng thực tế 7 thành phần}\\
+      {\footnotesize Thiết kế màn hình đăng nhập ngân hàng chuẩn Clean UI.}\\[0.14cm]
 
-      \textbf{7. Hệ thống giải pháp xử lý tràn không gian}\\
-      {\footnotesize Bộ công cụ trị triệt để: Ellipsis, Scrollable, Wrap, FittedBox.}\\[0.14cm]
+      \textbf{9. Minh họa mã nguồn: Căn chỉnh Row \& Column}\\
+      {\footnotesize Đoạn code áp dụng spaceBetween và căn lề trục phụ.}\\[0.14cm]
 
-      \textbf{8. Thiết kế cấu trúc ứng dụng mẫu 7 thành phần}\\
-      {\footnotesize Phân chia không gian hợp lý cho màn hình đăng nhập ngân hàng.}\\[0.14cm]
+      \textbf{10. Minh họa mã nguồn: Expanded \& Nút cố định}\\
+      {\footnotesize Phân bổ tỷ lệ hàng nút Login co dãn và Face ID 52x52.}\\[0.14cm]
 
-      \textbf{9. Phòng thí nghiệm tương tác: Topic 2 Demo Lab}\\
-      {\footnotesize Trực quan hoá phản ứng co giãn và kiểm thử thời gian thực.}\\[0.14cm]
+      \textbf{11. Nhấn mạnh giải pháp của tôi: Tràn ngang (Ellipsis)}\\
+      {\footnotesize Code AccountCard trị tên siêu dài bằng Expanded + Ellipsis.}\\[0.14cm]
 
-      \textbf{10. Tổng kết 4 trụ cột cốt lõi đạt được}\\
-      {\footnotesize Đánh giá chuẩn kiến trúc, bài học kinh nghiệm \& Phiên hỏi đáp Q\&A.}
+      \textbf{12. Nhấn mạnh giải pháp của tôi: Bộ 4 trị tràn dọc}\\
+      {\footnotesize Code LayoutBuilder + ScrollView + ConstrainedBox chống tràn bàn phím.}\\[0.14cm]
+
+      \textbf{13. Nhấn mạnh giải pháp của tôi: Flexible \& Responsive}\\
+      {\footnotesize Code nút tùy chọn phụ fit loose và khống chế maxWidth 440px.}\\[0.14cm]
+
+      \textbf{14. So sánh kỹ thuật, Kiểm chứng Demo \& Tổng kết}\\
+      {\footnotesize Bảng đối sánh 5 giải pháp, kiểm thử trực quan \& Q\&A.}
     \end{column}
   \end{columns}
 \end{frame}
@@ -458,87 +475,81 @@
 \end{frame}
 
 % ==============================================================================
-% TRANG 9: CƠ SỞ LÝ THUYẾT - HỆ THỐNG GIẢI PHÁP TRỊ OVERFLOW
+% TRANG 9: CƠ SỞ LÝ THUYẾT - 5 CÁCH XỬ LÝ OVERFLOW (PHẦN 1)
 % ==============================================================================
 \begin{frame}
-  \SlideHeader{CƠ SỞ LÝ THUYẾT}{Hệ Thống Giải Pháp Trị Triệt Để Lỗi Overflow}
+  \SlideHeader{CƠ SỞ LÝ THUYẾT}{Chi Tiết Các Cách Xử Lý Overflow (Phần 1)}
 
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \textbf{1. Expanded + TextOverflow.ellipsis (Trị tràn ngang):}\\
-      {\small Bọc \texttt{Expanded} quanh \texttt{Column}/\texttt{Text} trong Row để áp đặt giới hạn \texttt{maxWidth}. Kết hợp \texttt{overflow: TextOverflow.ellipsis} giúp chuỗi tự rút gọn thành dấu ba chấm \dots}\\[0.22cm]
+  \textbf{1. Sử dụng cuộn trang (\texttt{SingleChildScrollView} hoặc \texttt{ListView}):}
+  \begin{itemize}
+    \item \textbf{Nguyên tắc:} Khi nội dung bên trong vượt quá chiều cao hoặc chiều rộng của màn hình, thay vì cố gắng ép hiển thị trong một khung cố định, ta bọc nó vào một widget hỗ trợ cuộn.
+    \item \textbf{Áp dụng:} Thường dùng cho các form nhập liệu dài, trang cài đặt, hoặc chi tiết bài viết. Khi bàn phím ảo xuất hiện làm thu hẹp không gian, \texttt{SingleChildScrollView} sẽ tự động kích hoạt thanh cuộn để người dùng kéo xem nội dung bị che khuất.
+  \end{itemize}
 
-      \textbf{2. SingleChildScrollView + ConstrainedBox (Trị tràn dọc):}\\
-      {\small Khi chiều cao bị co hẹp do bàn phím ảo hoặc màn hình nhỏ, hệ thống tự động kích hoạt thanh cuộn mượt mà mà không làm mất bố cục.}\\[0.22cm]
+  \vspace{0.25cm}
+  \textbf{2. Phân chia không gian linh hoạt (\texttt{Expanded} hoặc \texttt{Flexible}):}
+  \begin{itemize}
+    \item \textbf{Nguyên tắc:} Thay vì để kích thước các widget tự do phình to gây đẩy các phần tử khác ra khỏi màn hình, ta ép chúng co giãn theo tỷ lệ không gian còn lại của trục chính (\texttt{Main Axis}) trong \texttt{Row} hoặc \texttt{Column}.
+    \item \textbf{Áp dụng:}
+      \begin{itemize}
+        \item \texttt{Expanded} (Tight Fit): Ép widget con phải lấp đầy hoàn toàn phần không gian trống còn lại.
+        \item \texttt{Flexible} (Loose Fit): Cho phép widget con co giãn linh hoạt nhưng không vượt quá kích thước tự nhiên tối đa của nó.
+      \end{itemize}
+  \end{itemize}
 
-      \textbf{3. Wrap thay thế cho Row (Trị tràn phần tử):}\\
-      {\small Khi danh sách nút bấm hoặc thẻ Tag vượt quá chiều ngang, \texttt{Wrap} tự động bẻ các phần tử dư thừa xuống dòng tiếp theo.}
-    \end{column}
-
-    \begin{column}{0.48\textwidth}
-      \textbf{4. FittedBox (Thu phóng tỷ lệ thông minh):}\\
-      {\small Tự động co nhỏ tỷ lệ (scale down) của toàn bộ widget con để đảm bảo nằm gọn bên trong khung hình mà không vỡ cấu trúc.}\\[0.22cm]
-
-      \textbf{Cây quyết định lựa chọn giải pháp tối ưu:}
-      \begin{tikzpicture}[font=\tiny, node distance=0.6cm]
-        \node[draw=NavyTitle, fill=CardBg, rounded corners=3pt] (q) {Phát hiện nguy cơ tràn?};
-        \node[draw=AccentOrange, fill=AccentOrange!10, rounded corners=3pt, below left=0.4cm and -0.2cm of q] (h) {Tràn ngang (Row)};
-        \node[draw=SuccessGreen, fill=SuccessGreen!10, rounded corners=3pt, below right=0.4cm and -0.2cm of q] (v) {Tràn dọc (Column)};
-
-        \draw[->, >=stealth] (q) -- (h);
-        \draw[->, >=stealth] (q) -- (v);
-
-        \node[draw=gray, below=0.3cm of h, text width=2.4cm, align=center] {Văn bản: \textbf{Expanded + Ellipsis}\\Nhiều thẻ: \textbf{Wrap}};
-        \node[draw=gray, below=0.3cm of v, text width=2.4cm, align=center] {Bàn phím: \textbf{ScrollView}\\Lồng nhau: \textbf{Expanded}};
-      \end{tikzpicture}
-    \end{column}
-  \end{columns}
+  \vspace{0.25cm}
+  \textbf{3. Tự động bẻ xuống dòng (\texttt{Wrap}):}
+  \begin{itemize}
+    \item \textbf{Nguyên tắc:} Mặc định \texttt{Row} chỉ sắp xếp theo một hàng ngang duy nhất và sẽ gây Overflow nếu hết chỗ ngang. Widget \texttt{Wrap} giải quyết việc này bằng cách tự động ngắt dòng, đưa các phần tử không đủ chỗ xuống dòng tiếp theo (giống như cách chữ ngắt dòng trong văn bản Word).
+    \item \textbf{Áp dụng:} Rất phù hợp cho danh sách các thẻ tag, bộ lọc tìm kiếm (\texttt{Chip}), hoặc danh sách từ khóa có độ dài không cố định.
+  \end{itemize}
 \end{frame}
 
 % ==============================================================================
-% TRANG 10: CƠ SỞ LÝ THUYẾT - KIẾN TRÚC PHẢN ỨNG THÍCH ỨNG
+% TRANG 10: CƠ SỞ LÝ THUYẾT - 5 CÁCH XỬ LÝ OVERFLOW (PHẦN 2)
 % ==============================================================================
 \begin{frame}
-  \SlideHeader{CƠ SỞ LÝ THUYẾT}{Kiến Trúc Bố Cục Thích Ứng (Responsive \& Adaptive)}
+  \SlideHeader{CƠ SỞ LÝ THUYẾT}{Chi Tiết Các Cách Xử Lý Overflow (Phần 2)}
 
   \begin{columns}[T]
-    \begin{column}{0.50\textwidth}
-      \textbf{2 Công cụ đo lường kích thước trong Flutter:}
+    \begin{column}{0.52\textwidth}
+      \textbf{4. Giới hạn hiển thị chữ dài (\texttt{TextOverflow.ellipsis} \& \texttt{maxLines}):}
       \begin{itemize}
-        \item \textbf{MediaQuery.of(context):}\\
-        Đo kích thước \textbf{toàn màn hình thiết bị} (\texttt{size.width}, \texttt{size.height}), hướng xoay ngang/dọc, và độ cao bàn phím (\texttt{viewInsets.bottom}). Nhược điểm: Kích hoạt rebuild lại toàn bộ widget con khi bất kỳ thuộc tính màn hình nào thay đổi.
-        \item \textbf{LayoutBuilder (Khuyên dùng):}\\
-        Cung cấp \texttt{BoxConstraints} \textbf{cục bộ} của chính widget cha truyền xuống. Giúp widget hoàn toàn độc lập với kích thước toàn cục của màn hình.
+        \item \textbf{Nguyên tắc:} Khi văn bản có độ dài quá lớn so với chiều rộng khung chứa, thay vì để tràn hoặc vỡ giao diện, ta giới hạn số dòng hiển thị và tự động thêm dấu ba chấm (\dots) vào cuối.
+        \item \textbf{Áp dụng:} Dùng cho tiêu đề bài viết, tên sản phẩm, hoặc tin nhắn dài trong danh sách chat.
       \end{itemize}
 
-      \vspace{0.15cm}
-      \textbf{Phân định Breakpoints chuẩn mực:}
+      \vspace{0.25cm}
+      \textbf{5. Co giãn tỷ lệ màn hình (\texttt{FittedBox} hoặc \texttt{MediaQuery}):}
       \begin{itemize}
-        \item \textbf{Mobile (< 600px):} Chiếm 100\% bề ngang.
-        \item \textbf{Tablet / Desktop ($\ge$ 600px):} Khống chế \texttt{maxWidth: 460px} và căn giữa.
+        \item \textbf{Nguyên tắc:} Tự động thu nhỏ hoặc phóng to toàn bộ nội dung con cho vừa vặn với kích thước khung chứa của cha.
+        \item \textbf{Áp dụng:} Thường dùng cho các icon, logo, hoặc tiêu đề cần vừa khít trên mọi kích cỡ màn hình.
       \end{itemize}
     \end{column}
 
-    \begin{column}{0.48\textwidth}
+    \begin{column}{0.44\textwidth}
       \centering
-      \textbf{Sơ đồ thích ứng đa kích thước:}\\[0.25cm]
-      \begin{tikzpicture}[font=\scriptsize, scale=0.85]
-        % Mobile
-        \draw[draw=NavyTitle, fill=CardBg, line width=1.1pt, rounded corners=4pt] (0, 0) rectangle (2.2, 3.4);
-        \node[above] at (1.1, 3.4) {\textbf{\textcolor{NavyTitle}{Mobile (< 600px)}}};
-        \draw[fill=NavyHeader!30] (0.2, 2.7) rectangle (2.0, 3.1);
-        \draw[fill=AccentOrange!40] (0.2, 1.6) rectangle (2.0, 2.5);
-        \draw[fill=SuccessGreen!40] (0.2, 0.8) rectangle (2.0, 1.4);
-        \node at (1.1, 0.4) {\tiny 1 Cột dọc toàn màn hình};
+      \textbf{Cây quyết định lựa chọn giải pháp:}\\[0.2cm]
+      \begin{tikzpicture}[font=\tiny, node distance=0.55cm]
+        \node[draw=NavyTitle, fill=CardBg, rounded corners=4pt, line width=0.9pt] (root) {\textbf{Phát hiện nguy cơ tràn?}};
+        
+        \node[draw=AccentOrange, fill=AccentOrange!10, rounded corners=3pt, below left=0.45cm and -0.3cm of root] (horiz) {\textbf{Tràn Ngang (Row)}};
+        \node[draw=SuccessGreen, fill=SuccessGreen!10, rounded corners=3pt, below right=0.45cm and -0.3cm of root] (vert) {\textbf{Tràn Dọc (Column)}};
 
-        % Tablet
-        \draw[draw=NavyTitle, fill=CardBg, line width=1.1pt, rounded corners=4pt] (3.0, 0) rectangle (5.8, 3.4);
-        \node[above] at (4.4, 3.4) {\textbf{\textcolor{NavyTitle}{Tablet / Desktop}}};
-        \draw[draw=AccentOrange, dashed, line width=0.8pt] (3.6, 0.2) rectangle (5.2, 3.2);
-        \draw[fill=NavyHeader!30] (3.8, 2.6) rectangle (5.0, 3.0);
-        \draw[fill=AccentOrange!40] (3.8, 1.6) rectangle (5.0, 2.4);
-        \draw[fill=SuccessGreen!40] (3.8, 0.8) rectangle (5.0, 1.4);
-        \node at (4.4, 0.4) {\tiny Giới hạn max width 460px};
+        \draw[->, >=stealth, line width=0.8pt] (root) -- (horiz);
+        \draw[->, >=stealth, line width=0.8pt] (root) -- (vert);
+
+        \node[draw=gray!80, fill=white, rounded corners=3pt, below=0.35cm of horiz, text width=2.5cm, align=left] {
+          $\bullet$ Văn bản dài: \textbf{Ellipsis}\\
+          $\bullet$ Chia tỷ lệ: \textbf{Expanded}\\
+          $\bullet$ Nhiều Tag: \textbf{Wrap}
+        };
+
+        \node[draw=gray!80, fill=white, rounded corners=3pt, below=0.35cm of vert, text width=2.5cm, align=left] {
+          $\bullet$ Bàn phím: \textbf{ScrollView}\\
+          $\bullet$ Đẩy chân: \textbf{Spacer}\\
+          $\bullet$ Phóng/thu: \textbf{FittedBox}
+        };
       \end{tikzpicture}
     \end{column}
   \end{columns}
@@ -556,7 +567,7 @@
 \begin{lstlisting}[numbers=none, basicstyle=\ttfamily\tiny]
 lib/
 |-- screens/login/
-|   |-- login_screen.dart       # Man hinh goc dieu phoi
+|   |-- login_screen.dart       # Dieu phoi bo cuc goc
 |   \-- widgets/
 |       |-- login_header.dart   # 1. Logo & Slogan
 |       |-- account_card.dart   # 2. Avatar & Stack Badge
@@ -564,8 +575,7 @@ lib/
 |       |-- login_button.dart   # 4. Nut Expanded chinh
 |       |-- face_id_button.dart # 5. Nut Fixed 52x52
 |       |-- login_options_row.dart # 6. Row spaceBetween
-|       |-- login_footer.dart   # 7. Spacer day xuong day
-|       \-- topic2_demo_panel.dart # Phong thi nghiem 4 Tab
+|       \-- login_footer.dart   # 7. Spacer day xuong day
 \end{lstlisting}
     \end{column}
 
@@ -584,10 +594,10 @@ lib/
 \end{frame}
 
 % ==============================================================================
-% TRANG 12: MINH HỌA MÃ NGUỒN - CĂN CHỈNH ROW & COLUMN
+% TRANG 12: MINH HỌA MÃ NGUỒN TÁC GIẢ - CĂN CHỈNH ROW & COLUMN
 % ==============================================================================
 \begin{frame}[fragile]
-  \SlideHeader{MINH HỌA MÃ NGUỒN}{Minh Họa: MainAxisAlignment \& CrossAxisAlignment}
+  \SlideHeader{MINH HỌA MÃ NGUỒN TÁC GIẢ}{Căn Chỉnh Trục: MainAxisAlignment \& CrossAxisAlignment}
 
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
@@ -597,20 +607,26 @@ class LoginOptionsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      // Day 2 tuy chon ve 2 mep trai va phai
+      // 1. Day 2 tuy chon ve 2 mep trai va phai
       mainAxisAlignment: 
           MainAxisAlignment.spaceBetween,
-      // Can giua truc doc de chu thang hang
+      // 2. Can giua truc doc de chu thang hang
       crossAxisAlignment: 
           CrossAxisAlignment.center,
       children: [
-        TextButton(
-          onPressed: () {},
-          child: const Text('Quen mat khau?'),
+        Flexible(
+          child: TextButton(
+            onPressed: onForgotPassword,
+            child: const Text('Quen mat khau?'),
+          ),
         ),
-        TextButton(
-          onPressed: () {},
-          child: const Text('Kich hoat Smart OTP'),
+        const SizedBox(width: 12),
+        Flexible(
+          child: TextButton.icon(
+            onPressed: onActivateOtp,
+            icon: const Icon(Icons.shield_outlined),
+            label: const Text('Kich hoat Smart OTP'),
+          ),
         ),
       ],
     );
@@ -620,43 +636,40 @@ class LoginOptionsRow extends StatelessWidget {
     \end{column}
 
     \begin{column}{0.48\textwidth}
-      \textbf{\texttt{widgets/login\_header.dart}}
+      \textbf{\texttt{screens/login/login\_screen.dart}}
 \begin{lstlisting}
-class LoginHeader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      // Can le truc phu: Can giua toan bo Text
-      crossAxisAlignment: 
-          CrossAxisAlignment.center,
-      children: [
-        Icon(Icons.account_balance, 
-             size: 54, color: AppColors.primary),
-        const SizedBox(height: 12),
-        Text(
-          'DNT DIGITAL BANKING',
-          style: TextStyle(
-            fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          'Ngan hang so thoi dai moi',
-          style: TextStyle(color: Colors.grey),
-        ),
-      ],
-    );
-  }
-}
+// Column chinh cua man hinh dang nhap:
+Column(
+  // 1. Main Axis (Doc): Bat dau tu dinh
+  mainAxisAlignment: MainAxisAlignment.start,
+  // 2. Cross Axis (Ngang): Keo gian deu cac 
+  // widget con de khop voi chieu ngang Form
+  crossAxisAlignment: CrossAxisAlignment.stretch,
+  children: [
+    const LoginHeader(),
+    const SizedBox(height: 24),
+    AccountCard(...),
+    const SizedBox(height: 18),
+    PasswordField(...),
+    const SizedBox(height: 20),
+    // Hang nut Dang nhap & Face ID
+    Row(...),
+    const SizedBox(height: 14),
+    const LoginOptionsRow(),
+    const Spacer(), // Day footer sat day
+    const LoginFooter(),
+  ],
+)
 \end{lstlisting}
     \end{column}
   \end{columns}
 \end{frame}
 
 % ==============================================================================
-% TRANG 13: MINH HỌA MÃ NGUỒN - EXPANDED VS FLEXIBLE
+% TRANG 13: MINH HỌA MÃ NGUỒN TÁC GIẢ - EXPANDED & NÚT CỐ ĐỊNH
 % ==============================================================================
 \begin{frame}[fragile]
-  \SlideHeader{MINH HỌA MÃ NGUỒN}{Minh Họa: Phân Phối Không Gian Bằng Expanded}
+  \SlideHeader{MINH HỌA MÃ NGUỒN TÁC GIẢ}{Phân Bổ Không Gian Hàng Nút Bằng Expanded \& Fixed}
 
   \textbf{\texttt{screens/login/login\_screen.dart (Hàng nút Đăng nhập \& Face ID)}}
 \begin{lstlisting}
@@ -664,14 +677,14 @@ class LoginHeader extends StatelessWidget {
 Row(
   crossAxisAlignment: CrossAxisAlignment.center,
   children: [
-    // 1. Nut Dang Nhap boc Expanded: Tu dong chien tron toan bo khong gian con lai
+    // 1. Nut Dang Nhap boc Expanded: Tu dong chiem tron toan bo khong gian con lai
     Expanded(
       child: LoginButton(
         isLoading: _isLoading,
         onPressed: _handleLogin,
       ),
     ),
-    const SizedBox(width: 12), // Khoang dem co dinh
+    const SizedBox(width: 12), // Khoang dem co dinh giua 2 nut
     // 2. Nut Face ID giu nguyen kich thuoc hinh vuong co dinh 52x52 pixel
     const FaceIdButton(), 
   ],
@@ -679,99 +692,58 @@ Row(
 \end{lstlisting}
 
   \begin{tcolorbox}[colback=CardBg, colframe=NavyHeader!30, arc=4pt, boxrule=0.8pt, top=5pt, bottom=5pt]
-    {\scriptsize \textbf{Phân tích kỹ thuật:} Nút Đăng nhập được bọc trong \texttt{Expanded} sẽ tự động giãn rộng để vừa khít từ màn hình nhỏ nhất (320px) đến máy tính bảng, trong khi nút Face ID bên cạnh luôn giữ vững tỷ lệ $52 \times 52\text{px}$ vuông vức hoàn hảo mà không bị bóp méo.}
+    {\scriptsize \textbf{Phân tích kỹ thuật của tác giả trong bài:} Nút Đăng nhập được bọc trong \texttt{Expanded} sẽ tự động giãn rộng để vừa khít từ màn hình nhỏ nhất (320px) đến máy tính bảng, trong khi nút Face ID bên cạnh luôn giữ vững tỷ lệ $52 \times 52\text{px}$ vuông vức hoàn hảo với hiệu ứng khung quét \texttt{Stack \& Positioned} mà không bị bóp méo.}
   \end{tcolorbox}
 \end{frame}
 
 % ==============================================================================
-% TRANG 14: MINH HỌA MÃ NGUỒN - STACK & POSITIONED
+% TRANG 14: NHẤN MẠNH CÁCH XỬ LÝ CỦA TÔI - TRÀN NGANG (ELLIPSIS)
 % ==============================================================================
 \begin{frame}[fragile]
-  \SlideHeader{MINH HỌA MÃ NGUỒN}{Minh Họa: Định Vị Huy Hiệu Trạng Thái Bằng Stack}
-
-  \textbf{\texttt{widgets/account\_card.dart (Chấm xanh Online đè lên Avatar)}}
-\begin{lstlisting}
-Stack(
-  children: [
-    // Lop 1: Avatar nguoi dung o vi tri goc duoi cung
-    CircleAvatar(
-      radius: 26,
-      backgroundColor: AppColors.primaryLight.withValues(alpha: 0.15),
-      child: const Icon(Icons.person, color: AppColors.primary, size: 28),
-    ),
-    // Lop 2: Cham tron xanh la cay (Online) ghim chinh xac tai goc duoi phai
-    Positioned(
-      bottom: 1,
-      right: 1,
-      child: Container(
-        width: 13,
-        height: 13,
-        decoration: BoxDecoration(
-          color: AppColors.success, // Mau xanh la Online
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 2.2), // Vien trang tao chieu sau
-        ),
-      ),
-    ),
-  ],
-)
-\end{lstlisting}
-
-  \begin{tcolorbox}[colback=CardBg, colframe=NavyHeader!30, arc=4pt, boxrule=0.8pt, top=4pt, bottom=4pt]
-    {\scriptsize \textbf{Phân tích kỹ thuật:} Thuộc tính \texttt{bottom: 1} và \texttt{right: 1} của \texttt{Positioned} giúp chấm tròn trạng thái luôn được neo chuẩn xác vào góc của Avatar trên mọi độ phân giải.}
-  \end{tcolorbox}
-\end{frame}
-
-% ==============================================================================
-% TRANG 15: MINH HỌA MÃ NGUỒN - XỬ LÝ TRÀN DÒNG NỘI DUNG THAY ĐỔI
-% ==============================================================================
-\begin{frame}[fragile]
-  \SlideHeader{MINH HỌA MÃ NGUỒN}{Minh Họa: Xử Lý Tràn Dòng Khi Nội Dung Quá Dài}
+  \SlideHeader{NHẤN MẠNH GIẢI PHÁP CỦA TÔI}{Trị Dứt Điểm Tràn Ngang Văn Bản: Expanded + Ellipsis}
 
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
-      \textbf{\textcolor{ErrorRed}{Cách viết cũ (Gây lỗi Overflow):}}
+      \textbf{\textcolor{ErrorRed}{Lỗi phổ biến (RenderFlex Overflowed):}}
 \begin{lstlisting}[rulecolor=\color{ErrorRed}]
 Row(
   children: [
     AvatarWidget(),
-    // Khong boc Expanded!
+    // KHONG boc Expanded!
     Column(
       children: [
         Text(
           'NGUYEN HOANG MINH KHANG TRONG DAT',
-          // Text se ve vuot mep phai man hinh!
+          // Text vuot mep phai man hinh!
         ),
       ],
     ),
   ],
 )
-// Hau qua: RenderFlex overflowed by 142px
+// Hau qua: A RenderFlex overflowed by 142px
 \end{lstlisting}
     \end{column}
 
     \begin{column}{0.48\textwidth}
-      \textbf{\textcolor{SuccessGreen}{Cách viết chuẩn MVVM / Clean UI:}}
+      \textbf{\textcolor{SuccessGreen}{Đoạn code xử lý của tôi trong AccountCard:}}
 \begin{lstlisting}[rulecolor=\color{SuccessGreen}]
-Row(
-  children: [
-    AvatarWidget(),
-    const SizedBox(width: 14),
-    // 1. Boc Expanded ap dat maxWidth chat che
-    Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            accountName,
-            maxLines: 1,
-            // 2. Tu dong rut gon dau ba cham
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+// File: widgets/account_card.dart
+Expanded(
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        accountName,
+        maxLines: 1, // Gioi han 1 dong
+        // Tu dong rut gon dau ba cham an toan
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          fontSize: 15, fontWeight: FontWeight.bold),
       ),
-    ),
-  ],
+      const SizedBox(height: 3),
+      Text(accountNumber, style: ...),
+    ],
+  ),
 )
 \end{lstlisting}
     \end{column}
@@ -779,33 +751,42 @@ Row(
 
   \vspace{0.1cm}
   \begin{tcolorbox}[colback=SuccessGreen!5, colframe=SuccessGreen, arc=4pt, boxrule=0.8pt, top=3pt, bottom=3pt]
-    {\scriptsize \textbf{Chứng minh kết quả:} Ngay cả khi tên tài khoản dài 100 ký tự, \texttt{Expanded} ép văn bản chỉ vẽ trong khoảng trống còn lại và tự động kết thúc bằng dấu ba chấm (\texttt{NGUYỄN HOÀNG MINH KHANG...}), không bao giờ bị vạch sọc vàng-đen.}
+    {\scriptsize \textbf{Minh chứng thực nghiệm trong bài:}\\
+    Tôi đã tích hợp nút \textbf{"Đổi tài khoản"} ngay trên thẻ \texttt{AccountCard}. Khi bấm, ứng dụng hoán đổi giữa tên ngắn chuẩn sang tên siêu dài (\texttt{AppStrings.longAccountName}: 65 ký tự). \texttt{Expanded} ép \texttt{Text} nhận đúng độ rộng khả dụng và lập tức hiển thị \texttt{NGUYỄN HOÀNG MINH KHANG...} mà hoàn toàn không bị lỗi vạch sọc vàng-đen!}
   \end{tcolorbox}
 \end{frame}
 
 % ==============================================================================
-% TRANG 16: MINH HỌA MÃ NGUỒN - CHỐNG TRÀN BÀN PHÍM ẢO
+% TRANG 15: NHẤN MẠNH CÁCH XỬ LÝ CỦA TÔI - BỘ 4 TRỊ TRÀN DỌC
 % ==============================================================================
 \begin{frame}[fragile]
-  \SlideHeader{MINH HỌA MÃ NGUỒN}{Minh Họa: Combo Vàng Chống Tràn Bàn Phím Ảo}
+  \SlideHeader{NHẤN MẠNH GIẢI PHÁP CỦA TÔI}{Bộ 4 Kinh Điển Trị Tràn Dọc Bàn Phím Ảo}
 
-  \textbf{\texttt{screens/login/login\_screen.dart (Bộ điều phối không gian thích ứng)}}
+  \textbf{\texttt{screens/login/login\_screen.dart (Bộ điều phối không gian thích ứng triệt để)}}
 \begin{lstlisting}
 LayoutBuilder(builder: (context, constraints) {
-  return SingleChildScrollView( // 1. Tu dong bien thanh danh sach cuon khi bi ep chat
-    physics: const BouncingScrollPhysics(),
+  return Center(
     child: ConstrainedBox(
-      // 2. Ep chieu cao toi thieu bang dung chieu cao kha dung cua man hinh
-      constraints: BoxConstraints(minHeight: constraints.maxHeight - 32.0),
-      child: IntrinsicHeight( // 3. Tinh toan chieu cao thuc te de Spacer() hoat dong
-        child: Column(
-          children: [
-            const LoginHeader(),
-            const AccountCard(),
-            const PasswordField(),
-            const Spacer(), // 4. Khi du chieu cao: Day Footer sat xuong day man hinh!
-            const LoginFooter(),
-          ],
+      constraints: BoxConstraints(maxWidth: maxFormWidth), // 1. Khong che chieu rong
+      child: SingleChildScrollView( // 2. Tu dong kich hoat cuon khi chieu cao bi ep chat
+        physics: const BouncingScrollPhysics(),
+        child: ConstrainedBox(
+          // 3. Ep chieu cao toi thieu bang chieu cao man hinh de giu chan Footer
+          constraints: BoxConstraints(minHeight: constraints.maxHeight - 32.0),
+          child: IntrinsicHeight( // 4. Tinh toan chieu cao thuc te de Spacer() hoat dong
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const LoginHeader(),
+                AccountCard(...),
+                PasswordField(...), // Khi bam vao -> Ban phim ao day len!
+                Row(...),
+                const LoginOptionsRow(),
+                const Spacer(), // Khi man hinh du cao: Day Footer sat xuong day!
+                const LoginFooter(),
+              ],
+            ),
+          ),
         ),
       ),
     ),
@@ -813,66 +794,126 @@ LayoutBuilder(builder: (context, constraints) {
 });
 \end{lstlisting}
 
-  \begin{tcolorbox}[colback=CardBg, colframe=NavyHeader!30, arc=4pt, boxrule=0.8pt, top=4pt, bottom=4pt]
-    {\scriptsize \textbf{Cơ chế hoạt động:} Trên màn hình lớn, \texttt{Spacer()} bung hết cỡ đẩy Footer xuống đáy tạo giao diện thanh lịch. Khi mở bàn phím ảo, chiều cao co hẹp lại, \texttt{SingleChildScrollView} tự động nhận diện và cho phép cuộn trơn tru mà không tràn 1 pixel nào!}
+  \begin{tcolorbox}[colback=CardBg, colframe=NavyHeader!30, arc=4pt, boxrule=0.8pt, top=3pt, bottom=3pt]
+    {\scriptsize \textbf{Phân tích cơ chế kép độc đáo:}\\
+    $\bullet$ \textbf{Khi màn hình bình thường:} \texttt{Spacer()} bung ra hết cỡ đẩy Footer xuống sát mép đáy trang trọng.\\
+    $\bullet$ \textbf{Khi mở bàn phím ảo hoặc xoay ngang máy:} Chiều cao khả dụng bị co hẹp $\rightarrow$ \texttt{SingleChildScrollView} tự động nhận diện và cho phép cuộn mượt mà, triệt tiêu 100\% lỗi tràn dọc (Bottom Overflow)!}
   \end{tcolorbox}
+\end{frame}
+
+% ==============================================================================
+% TRANG 16: NHẤN MẠNH CÁCH XỬ LÝ CỦA TÔI - FLEXIBLE & RESPONSIVE
+% ==============================================================================
+\begin{frame}[fragile]
+  \SlideHeader{NHẤN MẠNH GIẢI PHÁP CỦA TÔI}{Chống Tràn Với Flexible(fit: loose) \& Responsive}
+
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{1. Áp dụng \texttt{Flexible(fit: loose)}}\\
+      \textbf{\texttt{widgets/login\_options\_row.dart}}
+\begin{lstlisting}
+// Thay vi de TextButton tu do tran hang:
+Flexible(
+  fit: FlexFit.loose, // Co gian tu nhien
+  child: TextButton(
+    onPressed: onForgotPassword,
+    child: const Text(
+      'Quen mat khau?',
+      style: TextStyle(fontSize: 13),
+    ),
+  ),
+),
+\end{lstlisting}
+      {\scriptsize $\rightarrow$ Khi hệ điều hành phóng to font chữ (\textit{Text Scale Factor}), \texttt{Flexible} đảm bảo 2 nút tùy chọn tự co ép trong biên độ cho phép mà không làm tràn ngang.}
+    \end{column}
+
+    \begin{column}{0.48\textwidth}
+      \textbf{2. Khống chế Breakpoint đa kích thước}\\
+      \textbf{\texttt{screens/login/login\_screen.dart}}
+\begin{lstlisting}
+final bool isWideScreen = 
+    constraints.maxWidth > 600;
+final double horizontalPadding = 
+    isWideScreen ? 32.0 : 20.0;
+// Tablet / Desktop / Web: Max 440px can giua
+final double maxFormWidth = 
+    isWideScreen ? 440.0 : double.infinity;
+
+ConstrainedBox(
+  constraints: BoxConstraints(
+    maxWidth: maxFormWidth),
+  child: ...,
+)
+\end{lstlisting}
+      {\scriptsize $\rightarrow$ Giữ cho form đăng nhập luôn cân đối, chuyên nghiệp trên máy tính bảng và màn hình PC rộng.}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 % ==============================================================================
 % TRANG 17: PHÂN TÍCH CHUYÊN SÂU - BẢNG SO SÁNH KỸ THUẬT
 % ==============================================================================
 \begin{frame}
-  \SlideHeader{PHÂN TÍCH CHUYÊN SÂU}{Bảng So Sánh Toàn Diện Các Giải Pháp Bố Cục}
+  \SlideHeader{PHÂN TÍCH CHUYÊN SÂU}{Bảng So Sánh Toàn Diện Các Giải Pháp Xử Lý Overflow}
 
   \centering
   \renewcommand{\arraystretch}{1.2}
   {\scriptsize
-  \begin{tabular}{p{2.3cm}p{2.0cm}p{2.3cm}p{2.8cm}p{3.2cm}}
+  \begin{tabular}{p{2.6cm}p{1.9cm}p{2.3cm}p{2.5cm}p{3.3cm}}
     \toprule
     \rowcolor{TableHeadBg}
-    \textbf{Tên Widget} & \textbf{Chiều Quản Lý} & \textbf{Hành Vi Kích Thước} & \textbf{Phản Ứng Khi Tràn} & \textbf{Kịch Bản Tối Ưu} \\
+    \textbf{Giải pháp} & \textbf{Chiều Áp Dụng} & \textbf{Hành Vi Kích Thước} & \textbf{Khả Năng Xử Lý Tràn} & \textbf{Áp Dụng Trong Dự Án} \\
     \midrule
-    \textbf{Row / Column} & 1D (Ngang / Dọc) & Theo kích thước các con & Gây lỗi sọc vàng-đen & Danh sách phần tử cố định \\
+    \textbf{SingleChildScrollView} & Trục dọc / ngang & Mở rộng vô hạn trục cuộn & Tự kích hoạt thanh cuộn & Bọc toàn bộ Form chống tràn bàn phím \\
     \rowcolor{TableAltBg}
-    \textbf{Expanded} & 1D (Trục chính) & Ép lấp đầy (\textit{Tight}) & Không thể tự tràn & Căng rộng nút, bọc Text \\
-    \textbf{Flexible} & 1D (Trục chính) & Tự do $\le$ max (\textit{Loose}) & Giữ kích thước tự nhiên & Thẻ co giãn không bắt buộc \\
+    \textbf{Expanded (Tight)} & Trục chính Row/Col & Ép lấp đầy (\textit{Tight fit}) & Không thể tự tràn & Nút LoginButton \& AccountCard \\
+    \textbf{Flexible (Loose)} & Trục chính Row/Col & Tự do $\le$ max (\textit{Loose fit}) & Giữ size tự nhiên $\le$ trần & Hàng tùy chọn LoginOptionsRow \\
     \rowcolor{TableAltBg}
-    \textbf{Stack \& Positioned} & 2.5D (Trục Z \& XY) & Theo toạ độ ghim & Bị che khuất nếu ra ngoài & Huy hiệu, Avatar badge, Popup \\
-    \textbf{Wrap} & 2D (Đa dòng) & Tự bẻ xuống dòng mới & Không bao giờ tràn ngang & Danh sách Tag, Chip chọn lọc \\
+    \textbf{Wrap} & Đa dòng (2D) & Tự bẻ xuống dòng mới & Trị dứt điểm tràn ngang & Danh sách thẻ tag, bộ lọc chip \\
+    \textbf{Ellipsis \& MaxLines} & Trục chữ (Text) & Giới hạn số dòng cố định & Cắt chuỗi và thêm dấu \dots & Tên tài khoản trong AccountCard \\
     \rowcolor{TableAltBg}
-    \textbf{ScrollView Combo} & 1D (Trục cuộn) & Mở rộng vô hạn trục cuộn & Tự động bật thanh cuộn & Form nhập liệu bàn phím ảo \\
+    \textbf{FittedBox / Scale} & 2 chiều (XY) & Thu nhỏ tỷ lệ cả khung & Thu nhỏ widget vừa khung & Icon, Logo và nhãn cố định \\
     \bottomrule
   \end{tabular}
   }
 \end{frame}
 
 % ==============================================================================
-% TRANG 18: KIỂM CHỨNG & THỰC NGHIỆM - PHÒNG THÍ NGHIỆM TƯƠNG TÁC
+% TRANG 18: KIỂM CHỨNG & THỰC NGHIỆM - DEMO THỰC TẾ
 % ==============================================================================
 \begin{frame}
-  \SlideHeader{KIỂM CHỨNG \& THỰC NGHIỆM}{Phòng Thí Nghiệm Tương Tác: Topic 2 Demo Lab}
+  \SlideHeader{KIỂM CHỨNG \& THỰC NGHIỆM}{Kiểm Thử Thực Tế Các Kịch Bản Thay Đổi Không Gian}
 
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
-      \textbf{Tích hợp trực tiếp trong ứng dụng demo:}\\
-      Được lập trình tại file \texttt{topic2\_demo\_panel.dart} với 4 khu vực thí nghiệm thời gian thực phục vụ thuyết trình 15 phút:
+      \textbf{1. Kịch bản Nội dung thay đổi (Content Mutation):}
+      \begin{itemize}
+        \item Bấm nút icon \textit{Swap} trên thẻ \texttt{AccountCard}.
+        \item Tên tài khoản chuyển sang chuỗi siêu dài gồm 65 ký tự tiếng Việt có dấu.
+        \item \textbf{Kết quả:} \texttt{Expanded} lập tức giới hạn độ rộng, chuỗi tự thu gọn thành \texttt{NGUYỄN HOÀNG MINH KHANG TRỌNG ĐẠT...}, giao diện hoàn toàn nguyên vẹn 100\%.
+      \end{itemize}
 
-      \vspace{0.18cm}
-      \textbf{1. Module Main/Cross Axis Lab:}\\
-      Thao tác trực tiếp các nút chọn \texttt{start, center, spaceBetween...} để thấy các hộp màu di chuyển tức thì trên màn hình.\\[0.14cm]
-
-      \textbf{2. Module Expanded vs Flexible:}\\
-      Gạt nút chuyển đổi giữa \textbf{Tight Fit} và \textbf{Loose Fit}, kéo thanh trượt \texttt{flex factor} từ 1 đến 4 để quan sát tỷ lệ chia sẻ không gian.
+      \vspace{0.15cm}
+      \textbf{2. Kịch bản Xoay ngang màn hình (Orientation Change):}
+      \begin{itemize}
+        \item Chiều cao giảm từ 800px xuống còn 400px.
+        \item \textbf{Kết quả:} \texttt{SingleChildScrollView} tự kích hoạt, cho phép vuốt cuộn êm ái.
+      \end{itemize}
     \end{column}
 
     \begin{column}{0.48\textwidth}
-      \textbf{3. Module Stack \& Positioned:}\\
-      Thanh trượt Slider điều chỉnh toạ độ \texttt{top} và \texttt{left} trong thời gian thực, minh hoạ cách lớp đè hoạt động trên trục Z.\\[0.18cm]
-
-      \textbf{4. Module Thử Nghiệm Overflow:}\\
+      \textbf{3. Kịch bản Bàn phím ảo đẩy lên (Virtual Keyboard):}
       \begin{itemize}
-        \item \textbf{Thử nghiệm 1 (Nội dung đổi):} Bấm nút hoán đổi tên ngắn sang tên siêu dài 50 ký tự. Bật/tắt \texttt{Expanded} để trực tiếp thấy lỗi vạch sọc vàng xuất hiện và biến mất.
-        \item \textbf{Thử nghiệm 2 (Kích thước đổi):} Kéo slider thu hẹp chiều cao container để kích hoạt cơ chế chống tràn bằng \texttt{SingleChildScrollView}.
+        \item Chạm vào ô nhập mật khẩu \texttt{PasswordField}.
+        \item Bàn phím chiếm 280px chiều cao màn hình.
+        \item \textbf{Kết quả:} \texttt{Spacer()} tự co lại, toàn bộ các nút bấm và footer cuộn lên tự nhiên, không xuất hiện vạch sọc vàng-đen.
+      \end{itemize}
+
+      \vspace{0.15cm}
+      \textbf{4. Kịch bản Kích thước lớn (Tablet / Web Desktop):}
+      \begin{itemize}
+        \item Chiều rộng màn hình $> 600\text{px}$.
+        \item \textbf{Kết quả:} \texttt{LayoutBuilder} tự khống chế \texttt{maxWidth: 440px} và căn giữa hoàn mỹ.
       \end{itemize}
     \end{column}
   \end{columns}
@@ -884,17 +925,17 @@ LayoutBuilder(builder: (context, constraints) {
 \begin{frame}
   \SlideHeader{TỔNG KẾT ĐỀ TÀI}{4 Trụ Cột Bố Cục Cốt Lõi Đã Đạt Được}
 
-  \textbf{1. Làm chủ bản chất nguyên lý Box Constraints}\\
-  {\small Thấu suốt quy tắc \textit{"Constraints go down, Sizes go up, Parent sets position"}, chấm dứt tình trạng gán kích thước cố định bừa bãi và kiểm soát hoàn toàn cây widget.}\\[0.22cm]
+  \textbf{1. Nắm vững bản chất nguyên lý Box Constraints \& Trục toạ độ}\\
+  {\small Thấu suốt quy tắc \textit{"Constraints go down, Sizes go up, Parent sets position"}, làm chủ hướng trục Main/Cross Axis để điều phối không gian chính xác.}\\[0.22cm]
 
-  \textbf{2. Phân chia không gian linh hoạt \& tỷ lệ hoá khoa học}\\
-  {\small Phối hợp nhuần nhuyễn giữa \texttt{Expanded} (Tight fit) và \texttt{Flexible} (Loose fit) với hệ số \texttt{flex}, giúp giao diện co giãn hoàn mỹ trên mọi độ phân giải thiết bị.}\\[0.22cm]
+  \textbf{2. Nắm trọn vẹn 5 phương pháp xử lý Overflow chuẩn công nghiệp}\\
+  {\small Hiểu sâu nguyên lý và kịch bản áp dụng của: Cuộn trang (\texttt{SingleChildScrollView}), Phân chia linh hoạt (\texttt{Expanded/Flexible}), Tự bẻ dòng (\texttt{Wrap}), Giới hạn chữ (\texttt{Ellipsis}), và Co giãn tỷ lệ (\texttt{FittedBox}).}\\[0.22cm]
 
-  \textbf{3. Bố cục xếp lớp đa chiều chuẩn xác với Stack \& Positioned}\\
-  {\small Định vị các thành phần đè lớp theo trục Z (Online badge, Watermark, Overlay) một cách chính xác tuyệt đối mà không ảnh hưởng tới luồng căn chỉnh của các phần tử khác.}\\[0.22cm]
+  \textbf{3. Đóng gói giải pháp thực tế xuất sắc trong mã nguồn dự án}\\
+  {\small Trị dứt điểm tràn ngang bằng combo \texttt{Expanded + TextOverflow.ellipsis} và trị dứt điểm tràn dọc bằng bộ 4 \texttt{LayoutBuilder + ScrollView + ConstrainedBox + IntrinsicHeight + Spacer}}.\\[0.22cm]
 
-  \textbf{4. Triệt tiêu hoàn toàn lỗi Overflow với tư duy Responsive & Adaptive}\\
-  {\small Đóng gói giải pháp toàn diện: Trị tràn ngang bằng Ellipsis, trị tràn dọc bằng ScrollView + IntrinsicHeight, kết hợp phòng thí nghiệm tương tác trực quan 4 module.}
+  \textbf{4. Xây dựng ứng dụng mẫu Responsive \& Adaptive hoàn chỉnh}\\
+  {\small Bố cục 7 widget thành phần tự động co giãn và thích ứng hoàn hảo trên mọi kích thước màn hình cũng như khi nội dung thay đổi.}
 \end{frame}
 
 % ==============================================================================
