@@ -4,27 +4,26 @@ import 'package:flutter/material.dart';
 /// Áp dụng phong cách Ngân hàng số / Fintech hiện đại (Modern Banking)
 class AppColors {
   // Màu chủ đạo (Primary & Secondary)
-  static const Color primary = Color(0xFF0F4C81); // Xanh Classic Navy sang trọng
+  static const Color primary = Color(0xFF0F4C81); 
   static const Color primaryDark = Color(0xFF0A3156);
   static const Color primaryLight = Color(0xFF2E6CA4);
-  static const Color accent = Color(0xFF00B4D8); // Xanh Cyan năng động, điểm nhấn
-
+  static const Color accent = Color(0xFF00B4D8); 
   // Màu nền & Bề mặt
-  static const Color background = Color(0xFFF4F6F9); // Nền xám khói dịu mắt
-  static const Color surface = Color(0xFFFFFFFF); // Thẻ card trắng tinh tế
-  static const Color cardShadow = Color(0x14000000); // Bóng đổ mờ 8%
+  static const Color background = Color(0xFFF4F6F9); 
+  static const Color surface = Color(0xFFFFFFFF); 
+  static const Color cardShadow = Color(0x14000000);
 
   // Màu chữ (Typography)
-  static const Color textPrimary = Color(0xFF1D2939); // Đen than sắc nét
-  static const Color textSecondary = Color(0xFF667085); // Xám trung tính
-  static const Color textHint = Color(0xFF98A2B3); // Xám gợi ý
+  static const Color textPrimary = Color(0xFF1D2939);
+  static const Color textSecondary = Color(0xFF667085); 
+  static const Color textHint = Color(0xFF98A2B3);
   static const Color textWhite = Color(0xFFFFFFFF);
 
   // Trạng thái (Status & Feedback)
-  static const Color success = Color(0xFF12B76A); // Xanh lá online/thành công
-  static const Color error = Color(0xFFF04438); // Đỏ cảnh báo lỗi
-  static const Color warning = Color(0xFFF79009); // Vàng cam cảnh báo
-  static const Color info = Color(0xFF2E90FA); // Xanh dương thông tin
+  static const Color success = Color(0xFF12B76A); 
+  static const Color error = Color(0xFFF04438);
+  static const Color warning = Color(0xFFF79009); 
+  static const Color info = Color(0xFF2E90FA); 
 
   // Màu viền và ngăn cách
   static const Color border = Color(0xFFE4E7EC);

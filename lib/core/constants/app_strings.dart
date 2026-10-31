@@ -7,8 +7,11 @@ class AppStrings {
 
   // Thông tin thẻ tài khoản (Account Card)
   static const String defaultAccountName = 'TRẦN VĂN HỢP';
-  static const String longAccountName = 'TRẦN VĂN HỢP MAI TUẤN AN';
+  static const String subAccountName = 'MAI TUẤN AN';
+  static const String longAccountName = 'MAI TUẤN AN ft TRẦN VĂN HỢP';
   static const String defaultAccountNumber = '1029 8838 9999';
+  static const String subAccountNumber = '1062 3000 1001';
+  static const String longAccountNumber = '1836 3667 5051';
   static const String switchAccount = 'Đổi tài khoản';
   static const String onlineStatus = 'Đang hoạt động';
 

@@ -54,7 +54,29 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
 
   // Trạng thái tài khoản: Minh họa bố cục phản ứng khi nội dung thay đổi
-  bool _isLongName = false;
+  int _accountIndex = 0;
+
+  String get _currentAccountName {
+    switch (_accountIndex) {
+      case 1:
+        return AppStrings.subAccountName;
+      case 2:
+        return AppStrings.longAccountName;
+      default:
+        return AppStrings.defaultAccountName;
+    }
+  }
+
+  String get _currentAccountNumber {
+    switch (_accountIndex) {
+      case 1:
+        return AppStrings.subAccountNumber;
+      case 2:
+        return AppStrings.longAccountNumber;
+      default:
+        return AppStrings.defaultAccountNumber;
+    }
+  }
 
   @override
   void dispose() {
@@ -188,12 +210,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           // Áp dụng: Row, Stack + Positioned, Expanded chống overflow khi tên dài.
                           // Phản ứng khi nội dung thay đổi: Nhấn "Đổi tài khoản" để toggle tên ngắn / dài!
                           AccountCard(
-                            accountName: _isLongName
-                                ? AppStrings.longAccountName
-                                : AppStrings.defaultAccountName,
+                            accountName: _currentAccountName,
+                            accountNumber: _currentAccountNumber,
                             onSwitchAccount: () {
                               setState(() {
-                                _isLongName = !_isLongName;
+                                _accountIndex = (_accountIndex + 1) % 3;
                               });
                             },
                           ),
